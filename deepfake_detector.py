@@ -7,7 +7,7 @@ import os
 class DeepFakeClassifier(torch.nn.Module):
     def __init__(self):
         super(DeepFakeClassifier, self).__init__()
-        # Simple CNN architecture that can be adapted based on loaded weights
+        # Simple CNN architecture for simulation
         self.model = torch.nn.Sequential(
             torch.nn.Conv2d(3, 64, kernel_size=3, padding=1),
             torch.nn.BatchNorm2d(64),
@@ -46,14 +46,40 @@ class DeepfakeDetector:
                               std=[0.229, 0.224, 0.225])
         ])
 
-        print("Running in simulation mode since no model file was found")
+        self.simulation_mode = True
+        if model_path and os.path.exists(model_path):
+            try:
+                state_dict = torch.load(model_path, map_location=self.device)
+                self.model.load_state_dict(state_dict)
+                self.model.eval()
+                self.simulation_mode = False
+                print("Model loaded successfully")
+            except Exception as e:
+                print(f"Error loading model: {str(e)}")
+                print("Falling back to simulation mode")
+        else:
+            print("Running in simulation mode since no model file was found")
 
     @torch.no_grad()
     def predict_frame(self, frame):
         """Predict a single frame."""
         try:
-            # In simulation mode, return random prediction
-            return np.random.choice([0, 1]), np.random.random()
+            if self.simulation_mode:
+                # In simulation mode, return random prediction
+                return np.random.choice([0, 1]), np.random.random()
+
+            # Preprocess frame
+            frame_tensor = self.transform(frame).unsqueeze(0).to(self.device)
+
+            # Get prediction
+            output = self.model(frame_tensor)
+            probabilities = torch.softmax(output, dim=1)
+
+            # Get prediction and confidence
+            pred = torch.argmax(probabilities, dim=1).item()
+            conf = probabilities[0][pred].item()
+
+            return pred, conf
 
         except Exception as e:
             print(f"Error in predict_frame: {str(e)}")
@@ -72,8 +98,13 @@ class DeepfakeDetector:
 
             # Aggregate predictions
             avg_confidence = np.mean(confidences)
-            # In simulation mode, use length of video to determine prediction
-            final_prediction = "FAKE" if len(frames) % 2 == 0 else "REAL"
+            if self.simulation_mode:
+                # In simulation mode, use length of video to determine prediction
+                final_prediction = "FAKE" if len(frames) % 2 == 0 else "REAL"
+            else:
+                # Use majority voting for real predictions
+                is_fake = np.mean(predictions) > 0.5
+                final_prediction = "FAKE" if is_fake else "REAL"
 
             return final_prediction, avg_confidence
 
