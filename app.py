@@ -6,12 +6,15 @@ from utils import process_video, analyze_deepfake
 from models import db, Analysis
 
 app = Flask(__name__)
-app.secret_key = os.environ.get("SESSION_SECRET", "default-secret-key")
+app.secret_key = os.environ.get("SESSION_SECRET")
 
-# Configure SQLite database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///deepfake.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db.init_app(app)
+# Configure database
+app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
+app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
+    "pool_recycle": 300,
+    "pool_pre_ping": True,
+}
+app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 # Configure upload folder
 UPLOAD_FOLDER = 'uploads'
@@ -19,6 +22,13 @@ ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mov'}
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
+# Initialize the database
+db.init_app(app)
+
+with app.app_context():
+    # Create database tables
+    db.create_all()
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -45,10 +55,10 @@ def upload_file():
             file.save(filepath)
 
             # Process video
-            frames, face_frames = process_video(filepath)
+            frames, face_frames, original_frames = process_video(filepath)
 
             # Analyze for deepfake
-            result = analyze_deepfake(frames)
+            result = analyze_deepfake(frames, original_frames)
 
             # Save analysis to database
             analysis = Analysis(
@@ -83,6 +93,4 @@ def about():
     return render_template('about.html')
 
 if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
     app.run(host='0.0.0.0', port=5000, debug=True)
