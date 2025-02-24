@@ -19,11 +19,8 @@ def process_video(video_path):
             break
 
         if frame_count % 10 == 0:  # Process every 10th frame
-            # Convert frame to RGB for display
-            rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-            # Convert to base64 for display
-            _, buffer = cv2.imencode('.jpg', rgb_frame)
+            # Convert to base64 for display, keeping original colors
+            _, buffer = cv2.imencode('.jpg', frame)
             frame_base64 = base64.b64encode(buffer).decode('utf-8')
             frames.append(frame_base64)
 
@@ -44,10 +41,8 @@ def detect_faces(frame, face_cascade):
     face_images = []
     for (x, y, w, h) in faces:
         face_img = frame[y:y+h, x:x+w]
-        # Convert to RGB for display
-        face_rgb = cv2.cvtColor(face_img, cv2.COLOR_BGR2RGB)
-        # Convert to base64
-        _, buffer = cv2.imencode('.jpg', face_rgb)
+        # Convert to base64, keeping original colors
+        _, buffer = cv2.imencode('.jpg', face_img)
         face_base64 = base64.b64encode(buffer).decode('utf-8')
         face_images.append(face_base64)
 

@@ -1,6 +1,53 @@
 /* General Styles */
 body {
-    background-color: #f8f9fa;
+    background-color: #f4f7fc;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: #333;
+}
+
+.navbar {
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    background: linear-gradient(to right, #1a237e, #283593);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+    color: white !important;
+}
+
+.nav-link {
+    color: rgba(255,255,255,0.9) !important;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: white !important;
+}
+
+/* Upload Form */
+.card {
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    margin-bottom: 2rem;
+    background: white;
+    transition: transform 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    background: linear-gradient(to right, #1a237e, #283593);
+    color: white;
+    border-radius: 10px 10px 0 0 !important;
+    padding: 1.5rem;
+}
+
+.card-body {
+    padding: 2rem;
 }
 
 /* Analysis Results */
@@ -8,70 +55,153 @@ body {
 .faces-container {
     display: flex;
     overflow-x: auto;
-    padding: 15px;
-    gap: 10px;
+    padding: 20px;
+    gap: 15px;
+    background: rgba(0,0,0,0.02);
+    border-radius: 8px;
+    margin: 15px 0;
 }
 
 .frame-image {
-    height: 200px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    height: 240px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.frame-image:hover {
+    transform: scale(1.05);
 }
 
 .face-image {
-    height: 100px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+    height: 120px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.face-image:hover {
+    transform: scale(1.05);
 }
 
 .result-container {
+    text-align: center;
+    padding: 30px;
     margin-top: 30px;
-    padding: 20px;
 }
 
 .result-badge {
-    font-size: 24px;
-    padding: 10px 30px;
-    border-radius: 5px;
+    font-size: 28px;
+    padding: 15px 40px;
+    border-radius: 50px;
     display: inline-block;
-    margin-top: 10px;
+    margin-top: 15px;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
 }
 
 .badge-fake {
-    background-color: #dc3545;
+    background: linear-gradient(45deg, #ff1744, #d50000);
     color: white;
 }
 
 .badge-real {
-    background-color: #28a745;
+    background: linear-gradient(45deg, #00c853, #1b5e20);
     color: white;
 }
 
-/* Upload Form */
-.upload-form {
-    max-width: 600px;
-    margin: 0 auto;
+/* Form Elements */
+.form-control {
+    border-radius: 8px;
+    border: 2px solid #e0e0e0;
+    padding: 12px;
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #1a237e;
+    box-shadow: 0 0 0 0.2rem rgba(26,35,126,0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(45deg, #1a237e, #283593);
+    border: none;
+    border-radius: 50px;
+    padding: 12px 30px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0,0,0,0.2);
+    background: linear-gradient(45deg, #283593, #1a237e);
 }
 
 /* History Page */
-.history-page {
-    padding: 20px;
+.table {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.table thead th {
+    background: linear-gradient(to right, #1a237e, #283593);
+    color: white;
+    border: none;
+    padding: 15px;
+}
+
+.table td {
+    padding: 15px;
+    vertical-align: middle;
 }
 
 /* About Page */
-.about-page {
+.about-page .card {
     max-width: 800px;
     margin: 0 auto;
 }
 
+.creator-info {
+    margin-bottom: 2rem;
+}
+
 .contact-info {
     background-color: #f8f9fa;
-    padding: 20px;
-    border-radius: 5px;
+    padding: 25px;
+    border-radius: 10px;
     margin: 20px 0;
 }
 
 .contact-info i {
     margin-right: 10px;
-    color: #007bff;
+    color: #1a237e;
+}
+
+.support-info {
+    padding: 20px;
+    border-left: 4px solid #1a237e;
+    background: rgba(26,35,126,0.05);
+    border-radius: 0 10px 10px 0;
+}
+
+/* Loading Spinner */
+.spinner-border {
+    margin-right: 8px;
+    width: 1.2rem;
+    height: 1.2rem;
+}
+
+/* Flash Messages */
+.alert {
+    border-radius: 8px;
+    margin-bottom: 20px;
+    padding: 15px 20px;
 }
