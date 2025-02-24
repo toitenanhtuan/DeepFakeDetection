@@ -1,0 +1,77 @@
+/* General Styles */
+body {
+    background-color: #f8f9fa;
+}
+
+/* Analysis Results */
+.frames-container,
+.faces-container {
+    display: flex;
+    overflow-x: auto;
+    padding: 15px;
+    gap: 10px;
+}
+
+.frame-image {
+    height: 200px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.face-image {
+    height: 100px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.result-container {
+    margin-top: 30px;
+    padding: 20px;
+}
+
+.result-badge {
+    font-size: 24px;
+    padding: 10px 30px;
+    border-radius: 5px;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.badge-fake {
+    background-color: #dc3545;
+    color: white;
+}
+
+.badge-real {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Upload Form */
+.upload-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* History Page */
+.history-page {
+    padding: 20px;
+}
+
+/* About Page */
+.about-page {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.contact-info {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 5px;
+    margin: 20px 0;
+}
+
+.contact-info i {
+    margin-right: 10px;
+    color: #007bff;
+}

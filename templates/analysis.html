@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="analysis-result">
+    <h2 class="text-center mb-4">Analysis Results</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Frames Split</h3>
+        </div>
+        <div class="card-body">
+            <div class="frames-container">
+                {% for frame in frames %}
+                <img src="data:image/jpeg;base64,{{ frame }}" class="frame-image">
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Face Cropped Frames</h3>
+        </div>
+        <div class="card-body">
+            <div class="faces-container">
+                {% for face in face_frames %}
+                <img src="data:image/jpeg;base64,{{ face }}" class="face-image">
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="result-container text-center">
+        <h3>Detection Result:</h3>
+        <div class="result-badge {% if result == 'FAKE' %}badge-fake{% else %}badge-real{% endif %}">
+            {{ result }}
+        </div>
+    </div>
+</div>
+{% endblock %}
