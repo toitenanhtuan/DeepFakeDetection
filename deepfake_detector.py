@@ -65,20 +65,22 @@ class DeepfakeDetector:
         """Predict a single frame."""
         try:
             if self.simulation_mode:
-                # In simulation mode, return random prediction
-                return np.random.choice([0, 1]), np.random.random()
+                # In simulation mode, use frame brightness to simulate prediction
+                # Brighter frames are more likely to be classified as real
+                gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+                avg_brightness = np.mean(gray)
+                # Normalize brightness to [0, 1]
+                normalized_brightness = avg_brightness / 255.0
+                # If brightness > 0.5, predict as real (0), otherwise fake (1)
+                pred = 0 if normalized_brightness > 0.5 else 1
+                return pred, normalized_brightness
 
-            # Preprocess frame
+            # Real model prediction code
             frame_tensor = self.transform(frame).unsqueeze(0).to(self.device)
-
-            # Get prediction
             output = self.model(frame_tensor)
             probabilities = torch.softmax(output, dim=1)
-
-            # Get prediction and confidence
             pred = torch.argmax(probabilities, dim=1).item()
             conf = probabilities[0][pred].item()
-
             return pred, conf
 
         except Exception as e:
@@ -99,8 +101,9 @@ class DeepfakeDetector:
             # Aggregate predictions
             avg_confidence = np.mean(confidences)
             if self.simulation_mode:
-                # In simulation mode, use length of video to determine prediction
-                final_prediction = "FAKE" if len(frames) % 2 == 0 else "REAL"
+                # Use majority voting for predictions
+                is_fake = np.mean(predictions) > 0.5
+                final_prediction = "FAKE" if is_fake else "REAL"
             else:
                 # Use majority voting for real predictions
                 is_fake = np.mean(predictions) > 0.5
