@@ -8,6 +8,13 @@ from models import db, Analysis
 app = Flask(__name__)
 app.secret_key = os.environ.get("SESSION_SECRET")
 
+# Configure upload folder
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mov'}
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+os.makedirs(UPLOAD_FOLDER, exist_ok=True)
+
 # Configure database
 app.config["SQLALCHEMY_DATABASE_URI"] = os.environ.get("DATABASE_URL")
 app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
@@ -15,13 +22,6 @@ app.config["SQLALCHEMY_ENGINE_OPTIONS"] = {
     "pool_pre_ping": True,
 }
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-
-# Configure upload folder
-UPLOAD_FOLDER = 'uploads'
-ALLOWED_EXTENSIONS = {'mp4', 'avi', 'mov'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 # Initialize the database
 db.init_app(app)
