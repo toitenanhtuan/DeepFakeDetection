@@ -19,6 +19,21 @@
                             Supported formats: MP4, AVI, MOV
                         </div>
                     </div>
+                    <div class="mb-4">
+                        <label for="sequence_length" class="form-label">
+                            <i class="fas fa-film me-2"></i>Sequence Length (Frames)
+                        </label>
+                        <select class="form-select" id="sequence_length" name="sequence_length" required>
+                            <option value="" disabled selected>Select number of frames to analyze</option>
+                            {% for frames in available_models %}
+                            <option value="{{ frames }}">{{ frames }} frames ({{ accuracies[frames] }}% accuracy)</option>
+                            {% endfor %}
+                        </select>
+                        <div class="form-text text-muted">
+                            <i class="fas fa-info-circle me-1"></i>
+                            Higher frame count may provide better accuracy but takes longer to process
+                        </div>
+                    </div>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary btn-lg">
                             <i class="fas fa-search me-2"></i>Analyze Video

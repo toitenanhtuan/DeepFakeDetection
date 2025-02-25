@@ -3,6 +3,7 @@ import torchvision.transforms as transforms
 import cv2
 import numpy as np
 import os
+import glob
 
 class DeepFakeClassifier(torch.nn.Module):
     def __init__(self):
@@ -29,7 +30,7 @@ class DeepFakeClassifier(torch.nn.Module):
         return self.model(x)
 
 class DeepfakeDetector:
-    def __init__(self, model_path=None):
+    def __init__(self, sequence_length=None):
         self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         print(f"Using device: {self.device}")
 
@@ -47,18 +48,45 @@ class DeepfakeDetector:
         ])
 
         self.simulation_mode = True
-        if model_path and os.path.exists(model_path):
+        self.model_info = None
+
+        # Find available models
+        self.available_models = self.find_available_models()
+        print(f"Available models: {[f'{frames} frames' for frames in sorted(self.available_models.keys())]}")
+
+        # Load model if sequence_length is specified
+        if sequence_length:
+            self.load_model(sequence_length)
+
+    def find_available_models(self):
+        models = {}
+        model_files = glob.glob("models/*.pt")
+        for model_file in model_files:
+            try:
+                # Extract frame count from filename
+                frames = int(model_file.split('_')[3])
+                models[frames] = model_file
+            except:
+                continue
+        return models
+
+    def load_model(self, sequence_length):
+        if sequence_length in self.available_models:
+            model_path = self.available_models[sequence_length]
             try:
                 state_dict = torch.load(model_path, map_location=self.device)
                 self.model.load_state_dict(state_dict)
                 self.model.eval()
                 self.simulation_mode = False
-                print("Model loaded successfully")
+                self.model_info = f"Model loaded: {sequence_length} frames version"
+                print(self.model_info)
+                return True
             except Exception as e:
                 print(f"Error loading model: {str(e)}")
                 print("Falling back to simulation mode")
         else:
-            print("Running in simulation mode since no model file was found")
+            print(f"No model found for {sequence_length} frames")
+        return False
 
     @torch.no_grad()
     def predict_frame(self, frame):
@@ -66,12 +94,9 @@ class DeepfakeDetector:
         try:
             if self.simulation_mode:
                 # In simulation mode, use frame brightness to simulate prediction
-                # Brighter frames are more likely to be classified as real
                 gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
                 avg_brightness = np.mean(gray)
-                # Normalize brightness to [0, 1]
                 normalized_brightness = avg_brightness / 255.0
-                # If brightness > 0.5, predict as real (0), otherwise fake (1)
                 pred = 0 if normalized_brightness > 0.5 else 1
                 return pred, normalized_brightness
 

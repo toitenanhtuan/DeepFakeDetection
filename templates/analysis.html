@@ -3,7 +3,23 @@
 {% block content %}
 <div class="analysis-result">
     <h2 class="text-center mb-4">Analysis Results</h2>
-    
+
+    {% if video_path %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>Original Video</h3>
+        </div>
+        <div class="card-body">
+            <div class="video-container text-center">
+                <video controls class="img-fluid">
+                    <source src="{{ url_for('uploaded_file', filename=video_path) }}" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
     <div class="card mb-4">
         <div class="card-header">
             <h3>Frames Split</h3>
@@ -35,6 +51,11 @@
         <div class="result-badge {% if result == 'FAKE' %}badge-fake{% else %}badge-real{% endif %}">
             {{ result }}
         </div>
+        {% if model_info %}
+        <div class="mt-3">
+            <small class="text-muted">{{ model_info }}</small>
+        </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}
